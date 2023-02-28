@@ -11,11 +11,11 @@ class MorseCursor:
                         '0':'-----', ', ':'--..--', '.':'.-.-.-', '?':'..--..', '/':'-..-.',
                         '-':'-....-', '(':'-.--.', ')':'-.--.-'}
 
-    def __init__(self, dot_duration=0.2, dash_duration=0.5, letter_pause=0.2, word_pause=0.6):
-        self.dot_duration = dot_duration
-        self.dash_duration = dash_duration
-        self.letter_pause = letter_pause
-        self.word_pause = word_pause
+    def __init__(self, wpm=20, farnsworth=False):
+        self.dot_duration = 1.2 / (wpm * (1 if not farnsworth else 2))
+        self.dash_duration = 3 * self.dot_duration
+        self.letter_pause = self.dot_duration
+        self.word_pause = 3 * self.dot_duration
 
     def text_to_morse(self, text):
         morse = ''
@@ -27,9 +27,8 @@ class MorseCursor:
         return morse
 
     def blink_cursor(self, length):
-        for i in range(length):
-            print('_', end='', flush=True)
-            time.sleep(self.dot_duration)
+        print('_', end='', flush=True)
+        time.sleep(length * self.dot_duration)
 
     def translate_and_blink(self, text):
         morse = self.text_to_morse(text)
@@ -43,7 +42,3 @@ class MorseCursor:
             elif letter == ' ':
                 time.sleep(self.word_pause)
                 print(' ', end='', flush=True)
-
-# example usage
-mc = MorseCursor()
-mc.translate_and_blink('Hello world!')

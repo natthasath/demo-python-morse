@@ -1,5 +1,5 @@
-import winsound
 import time
+import winsound
 
 class MorseBeep:
     MORSE_CODE_DICT = { 'A':'.-', 'B':'-...', 'C':'-.-.', 'D':'-..', 'E':'.', 
@@ -12,12 +12,11 @@ class MorseBeep:
                         '0':'-----', ', ':'--..--', '.':'.-.-.-', '?':'..--..', '/':'-..-.',
                         '-':'-....-', '(':'-.--.', ')':'-.--.-'}
 
-    def __init__(self, frequency=800, dot_duration=100, dash_duration=300, letter_pause=0.2, word_pause=0.6):
-        self.frequency = frequency
-        self.dot_duration = dot_duration
-        self.dash_duration = dash_duration
-        self.letter_pause = letter_pause
-        self.word_pause = word_pause
+    def __init__(self, wpm=20, farnsworth=False):
+        self.dot_duration = 1200 / (wpm * (1 if not farnsworth else 2))
+        self.dash_duration = 3 * self.dot_duration
+        self.letter_pause = self.dot_duration
+        self.word_pause = 7 * self.dot_duration
 
     def text_to_morse(self, text):
         morse = ''
@@ -28,17 +27,21 @@ class MorseBeep:
                 morse += ' '
         return morse
 
-    def beep_morse(self, morse):
+    def play_sound(self, duration):
+        # Play a beep sound for the specified duration in milliseconds
+        winsound.Beep(440, int(duration))
+
+    def translate_and_play(self, text):
+        morse = self.text_to_morse(text)
         for letter in morse:
             if letter == '.':
-                winsound.Beep(self.frequency, self.dot_duration)
+                self.play_sound(self.dot_duration)
+                time.sleep(self.letter_pause / 1000)
             elif letter == '-':
-                winsound.Beep(self.frequency, self.dash_duration)
+                self.play_sound(self.dash_duration)
+                time.sleep(self.letter_pause / 1000)
             elif letter == ' ':
-                time.sleep(self.letter_pause)
-            elif letter == '/':
-                time.sleep(self.word_pause)
-
-    def translate_and_beep(self, text):
-        morse = self.text_to_morse(text)
-        self.beep_morse(morse)
+                time.sleep(self.word_pause / 1000)
+            else:
+                # Invalid character, ignore it
+                pass
