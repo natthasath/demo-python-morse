@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "demo-python-morse"
+version = "0.1.0"
+description = ""
+authors = ["natthasath <natthasath.sak@gmail.com>"]
+license = "MIT License"
+readme = "README.md"
+packages = [{include = "demo_python_morse"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
